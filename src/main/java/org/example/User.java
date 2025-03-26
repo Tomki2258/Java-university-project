@@ -5,13 +5,18 @@ public class User {
     private int rendedVehicle;
     private UserType userType;
 
-    User(String nick, String password, UserType userType,int rendedVehicle) {
+    public User(String nick, String password, UserType userType, int rendedVehicle) {
         this.nick = nick;
         this.password = password;
         this.userType = userType;
         this.rendedVehicle = rendedVehicle;
     }
-
+    public User(String nick, String password){
+        this.nick = nick;
+        this.password = password;
+        userType = UserType.USER;
+        rendedVehicle = -1;
+    }
     public void RentVehicle(int vehicle) {
         rendedVehicle = vehicle;
     }

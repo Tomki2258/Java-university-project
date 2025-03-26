@@ -1,13 +1,17 @@
-package org.example;
+package org.example.repositories;
+
+import org.example.Categories;
+import org.example.models.Car;
+import org.example.models.Motocycle;
+import org.example.models.Vehicle;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class VenicleManager implements IVehicleRepository {
-    ArrayList<Vehicle> vehicles = new ArrayList<>();
-    ArrayList<Vehicle> deepVehicles = new ArrayList<>();
-    VenicleManager() {
+    public ArrayList<Vehicle> vehicles = new ArrayList<>();
+    public ArrayList<Vehicle> deepVehicles = new ArrayList<>();
+    public VenicleManager() {
         loadCSV();
         setList();
     }
@@ -106,27 +110,15 @@ public class VenicleManager implements IVehicleRepository {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 List<String> splitted = List.of(data.split(";"));
-                if (Objects.equals(splitted.getLast(), "Car")) {
-                    vehicles.add(new Car(
-                            index
-                            , splitted.get(1)
-                            , splitted.get(2)
-                            , Integer.parseInt(splitted.get(3))
-                            , Integer.parseInt(splitted.get(4))
-                            , Boolean.parseBoolean(splitted.get(5))
-                            , Categories.valueOf(splitted.get(6))
-                            , splitted.get(7)));
-                } else {
-                    vehicles.add(new Motocycle(
-                            index
-                            , splitted.get(1)
-                            , splitted.get(2)
-                            , Integer.parseInt(splitted.get(3))
-                            , Integer.parseInt(splitted.get(4))
-                            , Boolean.parseBoolean(splitted.get(5))
-                            , Categories.valueOf(splitted.get(6))
-                            , splitted.get(7)));
-                }
+                vehicles.add(new Vehicle(
+                        index
+                        , splitted.get(1)
+                        , splitted.get(2)
+                        , Integer.parseInt(splitted.get(3))
+                        , Integer.parseInt(splitted.get(4))
+                        , Boolean.parseBoolean(splitted.get(5))
+                        , Categories.valueOf(splitted.get(6))
+                        , splitted.get(7)));
                 index++;
             }
             myReader.close();
@@ -169,4 +161,18 @@ public class VenicleManager implements IVehicleRepository {
         return null;
     }
 
+    @Override
+    public void getAvailableVehicles(List<Vehicle> vehicles) {
+        StringBuilder vehiclesString = new StringBuilder();
+        int index = 1;
+        for (Vehicle vehicle : vehicles) {
+            if(!vehicle.getRented()){
+                String vehicleLine = String.format("ID %d : Brand %s : Model %s : Year %d : Price %d : Status %b : Category %s\n",
+                        index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear(), vehicle.getPrice(), vehicle.getRented(), vehicle.getCategory(),vehicle.getType());
+                vehiclesString.append(vehicleLine);
+            }
+            index++;
+        }
+        System.out.println(vehiclesString);
+    }
 }

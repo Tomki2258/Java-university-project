@@ -1,4 +1,6 @@
-package org.example;
+package org.example.models;
+
+import org.example.Categories;
 
 public class Motocycle extends Vehicle implements Cloneable{
     Categories category;

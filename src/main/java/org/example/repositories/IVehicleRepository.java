@@ -1,7 +1,8 @@
-package org.example;
+package org.example.repositories;
+
+import org.example.models.Vehicle;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IVehicleRepository {
@@ -19,4 +20,5 @@ public interface IVehicleRepository {
     void addVehicle(Vehicle vehicle);
     void removeVehicle(int index);
     Vehicle getVehicle(int index);
+    void getAvailableVehicles(List <Vehicle> vehicles);
 }

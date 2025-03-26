@@ -1,4 +1,7 @@
-package org.example;
+package org.example.repositories;
+
+import org.example.User;
+import org.example.UserType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +15,7 @@ public class UserRepository implements IUserRepository{
 
     private List<User> users = new ArrayList<>();
     private final String USER_FILE = "users.csv";
-    UserRepository(){
+    public UserRepository(){
         users = load();
 //        users.add(new User("admin","kox",UserType.ADMIN));
 //        users.add(new User("user","skibidi",UserType.USER));
@@ -47,6 +50,23 @@ public class UserRepository implements IUserRepository{
             System.out.println(exception);
         }
     }
+
+    @Override
+    public void add(User user) {
+        users.add(user);
+        save();
+    }
+
+    @Override
+    public boolean userExist(String nick) {
+        for (User user: users){
+            if(user.GetNick().equals(nick)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private List<User> load(){
         File myObj = new File(USER_FILE);
         Scanner myReader = null;
@@ -71,6 +91,5 @@ public class UserRepository implements IUserRepository{
         }
 
         return loadedUsers;
-
     }
 }

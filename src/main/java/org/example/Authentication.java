@@ -1,11 +1,12 @@
 package org.example;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.example.repositories.UserRepository;
 
 public class Authentication {
     private final UserRepository userRepository;
 
-    Authentication(UserRepository userRepository){
+    public Authentication(UserRepository userRepository){
         this.userRepository = userRepository;
     }
     public void DescribeUsers(){

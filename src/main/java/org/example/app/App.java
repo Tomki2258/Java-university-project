@@ -1,6 +1,11 @@
-package org.example;
+package org.example.app;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import org.example.*;
+import org.example.models.Car;
+import org.example.models.Motocycle;
+import org.example.models.Vehicle;
+import org.example.repositories.UserRepository;
+import org.example.repositories.VenicleManager;
 
 import java.util.List;
 import java.util.Scanner;
@@ -61,9 +66,14 @@ public class App {
                     }
                     break;
                 case "3":
-                    venicleManager.getVehicles(venicleManager.vehicles);
-                    System.out.println("DEEP KOPIA");
-                    venicleManager.getVehicles(venicleManager.deepVehicles);
+                    if(user.GetUserType() == UserType.ADMIN){
+                        venicleManager.getVehicles(venicleManager.vehicles);
+                    }
+                    else{
+                        venicleManager.getAvailableVehicles(venicleManager.vehicles);
+                    }
+                    //System.out.println("DEEP KOPIA");
+                    //venicleManager.getVehicles(venicleManager.deepVehicles);
                     break;
                 case "4":
                     System.out.println("narka");
@@ -94,11 +104,11 @@ public class App {
                         case 1:
                             vehicle = new Car(
                                     (int) venicleManager.vehicles.stream().count(),
-                                    splitted.getFirst(),
-                                    splitted.get(1),
+                                    brand,
+                                    model,
                                     year,
                                     price,
-                                    false,
+                                    rented,
                                     categories,
                                     "Car"
                             );

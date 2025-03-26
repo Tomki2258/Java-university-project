@@ -1,6 +1,8 @@
-package org.example;
+package org.example.models;
 
-abstract class Vehicle implements Cloneable {
+import org.example.Categories;
+
+public class Vehicle implements Cloneable {
     private int id;
     private String brand;
     private String model;
@@ -39,7 +41,7 @@ abstract class Vehicle implements Cloneable {
                 id + " " + brand + " " + model + " " + year + " " + price + " " + rented
         );
     }
-    String toStr(){
+    public String toStr(){
         return  String.format("%s %s",brand,model);
     }
 
