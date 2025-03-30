@@ -5,6 +5,7 @@ import org.example.AuthService;
 import org.example.Authentication;
 import org.example.User;
 import org.example.repositories.UserRepository;
+import org.example.repositories.VehiclesJsonRepository;
 
 import java.util.Scanner;
 

@@ -21,4 +21,6 @@ public interface IVehicleRepository {
     void removeVehicle(int index);
     Vehicle getVehicle(int index);
     void getAvailableVehicles(List <Vehicle> vehicles);
+    void loadJson();
+    void saveJson();
 }

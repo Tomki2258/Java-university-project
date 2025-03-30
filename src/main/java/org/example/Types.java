@@ -1,6 +1,7 @@
 package org.example;
 
 public enum Types {
-    Car,
-    Motocycle
+    Bus,
+    Motorcycle,
+    Car
 }

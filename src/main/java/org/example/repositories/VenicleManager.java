@@ -1,18 +1,23 @@
 package org.example.repositories;
 
 import org.example.Categories;
-import org.example.models.Car;
-import org.example.models.Motocycle;
+import org.example.Types;
+
 import org.example.models.Vehicle;
 
 import java.io.*;
 import java.util.*;
 
 public class VenicleManager implements IVehicleRepository {
-    public ArrayList<Vehicle> vehicles = new ArrayList<>();
-    public ArrayList<Vehicle> deepVehicles = new ArrayList<>();
+    public List<Vehicle> vehicles = new ArrayList<>();
+    public List<Vehicle> deepVehicles = new ArrayList<>();
+
+
+    private VehiclesJsonRepository vehiclesJsonRepository;
+
     public VenicleManager() {
-        loadCSV();
+        vehiclesJsonRepository = new VehiclesJsonRepository();
+        vehicles = vehiclesJsonRepository.getVehicles();
         setList();
     }
 
@@ -56,13 +61,13 @@ public class VenicleManager implements IVehicleRepository {
     @Override
     public void rentVehicle(int index) {
         vehicles.get(index).setRended(true);
-        save();
+        //save();
     }
 
     @Override
     public void returnVehicle(int index) {
         vehicles.get(index).setRended(false);
-        save();
+        //save();
     }
 
     @Override
@@ -71,7 +76,7 @@ public class VenicleManager implements IVehicleRepository {
         int index = 1;
         for (Vehicle vehicle : list) {
             String vehicleLine = String.format("ID %d : Brand %s : Model %s : Year %d : Price %d : Status %b : Category %s\n",
-                    index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear(), vehicle.getPrice(), vehicle.getRented(), vehicle.getCategory(),vehicle.getType());
+                    index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear(), vehicle.getPrice(), vehicle.getRented(),vehicle.getType());
             vehiclesString.append(vehicleLine);
             index++;
         }
@@ -91,7 +96,6 @@ public class VenicleManager implements IVehicleRepository {
             System.out.println(exception);
         }
     }
-
     public String toCSV() {
         StringBuilder vehiclesString = new StringBuilder();
         for (Vehicle vehicle : vehicles) {
@@ -103,29 +107,7 @@ public class VenicleManager implements IVehicleRepository {
     }
     @Override
     public void loadCSV() {
-        try {
-            File myObj = new File("cars.csv");
-            Scanner myReader = new Scanner(myObj);
-            int index = 0;
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                List<String> splitted = List.of(data.split(";"));
-                vehicles.add(new Vehicle(
-                        index
-                        , splitted.get(1)
-                        , splitted.get(2)
-                        , Integer.parseInt(splitted.get(3))
-                        , Integer.parseInt(splitted.get(4))
-                        , Boolean.parseBoolean(splitted.get(5))
-                        , Categories.valueOf(splitted.get(6))
-                        , splitted.get(7)));
-                index++;
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -147,12 +129,14 @@ public class VenicleManager implements IVehicleRepository {
     @Override
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+        saveJson();
         setList();
     }
 
     @Override
     public void removeVehicle(int index) {
         vehicles.remove(index);
+        saveJson();
         setList();
     }
 
@@ -174,5 +158,18 @@ public class VenicleManager implements IVehicleRepository {
             index++;
         }
         System.out.println(vehiclesString);
+    }
+
+    @Override
+    public void loadJson() {
+
+    }
+
+    @Override
+    public void saveJson() {
+        vehiclesJsonRepository.save(vehicles);
+    }
+    public int getVehicleCount(){
+        return vehicles.size();
     }
 }

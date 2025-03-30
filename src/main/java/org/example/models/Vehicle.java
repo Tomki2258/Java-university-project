@@ -1,46 +1,45 @@
 package org.example.models;
 
 import org.example.Categories;
+import org.example.Types;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Vehicle implements Cloneable {
     private int id;
+    private String type;
     private String brand;
     private String model;
     private int year;
-    private int price;
     private Boolean rented;
-    private Categories category;
-    private String type;
+    private String category;
     private String hashCode;
-    public Vehicle(int id,String brand, String model, int year, int price, boolean rented){
-        this.id = id;
-        this.brand = brand;
-        this.model = model;
-        this.year = year;
-        this.price = price;
-        this.rented = rented;
-        category = Categories.B;
-        type = "Car";
 
-        hashCode = String.valueOf(this.hashCode());
-    }
-    public Vehicle(int id,String brand, String model, int year, int price, boolean rented,Categories category,String type){
+    private String plate;
+    private int price;
+    private HashMap<String, Object> attributes;
+
+    public Vehicle(int id,String brand,String model,int year,String type,String plate,HashMap<String,Object> attributes){
         this.id = id;
         this.brand = brand;
         this.model = model;
         this.year = year;
-        this.price = price;
-        this.rented = rented;
-        this.category = category;
         this.type = type;
+        this.plate = plate;
+        this.attributes = attributes;
+    }
+    public Vehicle(int id,String brand,String model,int year,String type,String plate){
+        this.id = id;
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.type = type;
+        this.plate = plate;
+    }
 
-        hashCode = String.valueOf(this.hashCode());
-    }
-    void print(){
-        System.out.println(
-                id + " " + brand + " " + model + " " + year + " " + price + " " + rented
-        );
-    }
     public String toStr(){
         return  String.format("%s %s",brand,model);
     }
@@ -48,7 +47,9 @@ public class Vehicle implements Cloneable {
     public int getId() {
         return id;
     }
-
+    public String getType() {
+        return type;
+    }
     public String getBrand() {
         return brand;
     }
@@ -69,12 +70,8 @@ public class Vehicle implements Cloneable {
         return rented;
     }
 
-    public Categories getCategory() {
+    public String getCategory() {
         return category;
-    }
-
-    public String getType() {
-        return type;
     }
     public void setRended(boolean state){
         rented = state;
@@ -90,7 +87,13 @@ public class Vehicle implements Cloneable {
 
         return vehicle;
     }
+    public void Describe(){
+        System.out.println(id + " " + category + " " + brand + " " +model + " " + year + " " + plate);
+    }
     public String getHashCode(){
         return hashCode;
+    }
+    public HashMap<String,Object> getAttributes(){
+        return attributes;
     }
 }

@@ -10,4 +10,5 @@ public interface IUserRepository {
     void save();
     void add(User user);
     boolean userExist(String nick);
+    void saveJson();
 }

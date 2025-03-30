@@ -15,10 +15,15 @@ public class UserRepository implements IUserRepository{
 
     private List<User> users = new ArrayList<>();
     private final String USER_FILE = "users.csv";
+    private final UsersJsonRepository usersJsonRepository = new UsersJsonRepository();
     public UserRepository(){
-        users = load();
+        users = usersJsonRepository.getUsers();
 //        users.add(new User("admin","kox",UserType.ADMIN));
 //        users.add(new User("user","skibidi",UserType.USER));
+
+        for(User user:users){
+            user.Describeuser();
+        }
     }
     @Override
     public User getUser(int index) {
@@ -65,6 +70,11 @@ public class UserRepository implements IUserRepository{
             }
         }
         return false;
+    }
+
+    @Override
+    public void saveJson() {
+        usersJsonRepository.saveUsers();
     }
 
     private List<User> load(){

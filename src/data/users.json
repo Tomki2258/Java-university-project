@@ -1,0 +1,23 @@
+[
+  {
+    "id": "fc6e600b-e89e-42e2-b2b7-ca18edb68924",
+    "login": "lukasz",
+    "password": "$2a$10$7MUYZR8FP8ebLzfqwMK85ejBke/TNp/Yme9NrC0XxRy.NAFde2vEm",
+    "rendedVehicle": 0,
+    "role": "ADMIN"
+  },
+  {
+    "id": "f4b5b79b-df2c-4e0a-89fc-464908d2e6dc",
+    "login": "kamil",
+    "password": "$2a$10$BwY3UtVLQTSUjX3zXjCeJ.h4Gwq4MiLhhTaUC.Yesce7rBDRkdU/i",
+    "rendedVehicle": 0,
+    "role": "USER"
+  },
+  {
+    "id": "c12aad74-1348-409a-b0e5-409fd5f9ef51",
+    "login": "tomek",
+    "password": "$2a$10$Z8LcyEd5orgZmjqGxmKRUO2s0PLu6.Yrst6od4s2Dqjs6XX6Zho8e",
+    "rendedVehicle": -1,
+    "role": "USER"
+  }
+]

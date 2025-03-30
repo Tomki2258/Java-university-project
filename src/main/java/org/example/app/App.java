@@ -1,8 +1,6 @@
 package org.example.app;
 
 import org.example.*;
-import org.example.models.Car;
-import org.example.models.Motocycle;
 import org.example.models.Vehicle;
 import org.example.repositories.UserRepository;
 import org.example.repositories.VenicleManager;
@@ -13,13 +11,13 @@ import java.util.Scanner;
 public class App {
     private User user;
     private final UserRepository userRepository;
+    private final VenicleManager venicleManager;
     App(User user, UserRepository userRepository){
         this.user = user;
         this.userRepository = userRepository;
+        venicleManager = new VenicleManager();
     }
     void mainProgram(){
-        VenicleManager venicleManager = new VenicleManager();
-
 
         boolean isWorking = true;
         /*
@@ -79,55 +77,12 @@ public class App {
                     System.out.println("narka");
 
                     isWorking = false;
+
+                    venicleManager.saveJson();
+                    userRepository.saveJson();
                     break;
                 case "5":
-                    if(user.GetUserType() != UserType.ADMIN) {
-                        System.out.println("NIE MASZ PRAWA DO WYKONANIA TEJ OPERACJI");
-                        break;
-                    }
-                    System.out.println("PODAJ TYP POJAZDU\n1:Auto\n2:Motocykl");
-                    int type = scanner.nextInt();
-                    System.out.println("Podaj dane pojazdu\nMARKA:MODEL:ROK:CENA:KATEGORIA_PRAWA_JAZDY");
-                    scanner = new Scanner(System.in);
-                    String line = scanner.nextLine();
-                    List<String> splitted = List.of(line.split(":"));
-                    System.out.println(splitted);
-                    String brand = splitted.getFirst();
-                    String model = splitted.get(1);
-                    int year = Integer.valueOf(splitted.get(2));
-                    int price = Integer.valueOf(splitted.get(3));
-                    boolean rented = false;
-                    Categories categories = Categories.valueOf(splitted.get(4));
-
-                    Vehicle vehicle = null;
-                    switch (type){
-                        case 1:
-                            vehicle = new Car(
-                                    (int) venicleManager.vehicles.stream().count(),
-                                    brand,
-                                    model,
-                                    year,
-                                    price,
-                                    rented,
-                                    categories,
-                                    "Car"
-                            );
-                            break;
-                        case 2:
-                            vehicle = new Motocycle(
-                                    (int) venicleManager.vehicles.stream().count(),
-                                    splitted.getFirst(),
-                                    splitted.get(1),
-                                    year,
-                                    price,
-                                    false,
-                                    categories,
-                                    "Moto"
-                            );
-                            break;
-                    }
-
-                    venicleManager.addVehicle(vehicle);
+                    addingVehile();
                     break;
                 case "6":
                     if(user.GetUserType() != UserType.ADMIN) {
@@ -156,5 +111,32 @@ public class App {
                     break;
             }
         }
+    }
+    private void addingVehile(){
+        Scanner scanner = new Scanner(System.in);
+        if(user.GetUserType() != UserType.ADMIN) {
+            System.out.println("NIE MASZ PRAWA DO WYKONANIA TEJ OPERACJI");
+            return;
+        }
+        System.out.println("Podaj dane pojazdu\nMARKA:MODEL:ROK:KATEGORIA:REJESTRACJA");
+        scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        List<String> splitted = List.of(line.split(":"));
+
+        String brand = splitted.getFirst();
+        String model = splitted.get(1);
+        int year = Integer.valueOf(splitted.get(2));
+        String category = splitted.get(3);
+        String plate = splitted.get(4);
+        Vehicle vehicle = new Vehicle(
+                venicleManager.getVehicleCount() + 1,
+                brand,
+                model,
+                year,
+                category,
+                plate
+        );
+
+        venicleManager.addVehicle(vehicle);
     }
 }
