@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Vehicle implements Cloneable {
-    private int id;
+    private String id;
     private String type;
     private String brand;
     private String model;
@@ -22,7 +22,7 @@ public class Vehicle implements Cloneable {
     private int price;
     private HashMap<String, Object> attributes;
 
-    public Vehicle(int id,String brand,String model,int year,String type,String plate,HashMap<String,Object> attributes){
+    public Vehicle(String id,String brand,String model,int year,String type,String plate,HashMap<String,Object> attributes){
         this.id = id;
         this.brand = brand;
         this.model = model;
@@ -31,7 +31,7 @@ public class Vehicle implements Cloneable {
         this.plate = plate;
         this.attributes = attributes;
     }
-    public Vehicle(int id,String brand,String model,int year,String type,String plate){
+    public Vehicle(String id,String brand,String model,int year,String type,String plate){
         this.id = id;
         this.brand = brand;
         this.model = model;
@@ -44,7 +44,7 @@ public class Vehicle implements Cloneable {
         return  String.format("%s %s",brand,model);
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
     public String getType() {

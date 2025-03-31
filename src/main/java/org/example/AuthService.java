@@ -30,10 +30,10 @@ public class AuthService {
 
         boolean passwordResult = false;
 
-        /// = authentication.CheckPassword(DigestUtils.sha256Hex(passwordInput));
+        passwordResult = authentication.CheckPassword(DigestUtils.sha256Hex(passwordInput));
         //String hashed = BCrypt.hashpw(passwordInput, BCrypt.gensalt());
 
-        passwordResult = authentication.CheckPassword(passwordInput);
+        //passwordResult = authentication.CheckPassword(passwordInput);
 
         if (!passwordResult) {
             System.out.println("BŁĄD LOGOWANIA");
@@ -60,7 +60,7 @@ public class AuthService {
             System.out.println("HASLO NIE MOZE BYC PUSTE");
             return false;
         }
-        String hashed = BCrypt.hashpw(passwordInput, BCrypt.gensalt());
+        String hashed = DigestUtils.sha256Hex(passwordInput);
         UUID uuid = UUID.randomUUID();
 
         User user = new User(uuid.toString(), loginString, hashed);

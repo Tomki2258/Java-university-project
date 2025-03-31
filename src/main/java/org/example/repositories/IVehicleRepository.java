@@ -1,12 +1,13 @@
 package org.example.repositories;
 
+import org.example.User;
 import org.example.models.Vehicle;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface IVehicleRepository {
-    void rentVehicle(int index);
+    void rentVehicle(int index, User user);
 
     void returnVehicle(int index);
 

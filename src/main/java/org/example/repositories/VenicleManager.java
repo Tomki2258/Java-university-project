@@ -3,6 +3,8 @@ package org.example.repositories;
 import org.example.Categories;
 import org.example.Types;
 
+import org.example.User;
+import org.example.UserType;
 import org.example.models.Vehicle;
 
 import java.io.*;
@@ -12,10 +14,11 @@ public class VenicleManager implements IVehicleRepository {
     public List<Vehicle> vehicles = new ArrayList<>();
     public List<Vehicle> deepVehicles = new ArrayList<>();
 
-
+    private RentalRepository rentalRepository;
     private VehiclesJsonRepository vehiclesJsonRepository;
 
-    public VenicleManager() {
+    public VenicleManager(RentalRepository rentalRepository) {
+        this.rentalRepository = rentalRepository;
         vehiclesJsonRepository = new VehiclesJsonRepository();
         vehicles = vehiclesJsonRepository.getVehicles();
         setList();
@@ -59,9 +62,12 @@ public class VenicleManager implements IVehicleRepository {
 //    }
 
     @Override
-    public void rentVehicle(int index) {
+    public void rentVehicle(int index, User user) {
         vehicles.get(index).setRended(true);
+
+        rentalRepository.addRental(user,vehicles.get(index));
         //save();
+        rentalRepository.printRentals();
     }
 
     @Override
@@ -74,10 +80,16 @@ public class VenicleManager implements IVehicleRepository {
     public void getVehicles(List <Vehicle> list) {
         StringBuilder vehiclesString = new StringBuilder();
         int index = 1;
-        for (Vehicle vehicle : list) {
-            String vehicleLine = String.format("ID %d : Brand %s : Model %s : Year %d : Price %d : Status %b : Category %s\n",
-                    index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear(), vehicle.getPrice(), vehicle.getRented(),vehicle.getType());
-            vehiclesString.append(vehicleLine);
+        for (Vehicle vehicle : vehicles) {
+            String line = String.format("ID:%d Brand:%s Model:%s Year:%d"
+                    ,index,vehicle.getBrand(),vehicle.getModel(),vehicle.getYear());
+            if(rentalRepository.isVehicleRented(vehicle)){
+                vehiclesString.append(" RENDTED\n");
+            }
+            else{
+                vehiclesString.append("\n");
+            }
+            vehiclesString.append(line);
             index++;
         }
         System.out.println(vehiclesString);
@@ -150,11 +162,12 @@ public class VenicleManager implements IVehicleRepository {
         StringBuilder vehiclesString = new StringBuilder();
         int index = 1;
         for (Vehicle vehicle : vehicles) {
-            if(!vehicle.getRented()){
-                String vehicleLine = String.format("ID %d : Brand %s : Model %s : Year %d : Price %d : Status %b : Category %s\n",
-                        index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear(), vehicle.getPrice(), vehicle.getRented(), vehicle.getCategory(),vehicle.getType());
-                vehiclesString.append(vehicleLine);
+            if(rentalRepository.isVehicleRented(vehicle)){
+                continue;
             }
+            String line = String.format("ID:%d Brand:%s Model:%s Year:%d\n"
+                    ,index,vehicle.getBrand(),vehicle.getModel(),vehicle.getYear());
+            vehiclesString.append(line);
             index++;
         }
         System.out.println(vehiclesString);

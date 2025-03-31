@@ -16,7 +16,8 @@ public class Main {
 
         Authentication authentication = new Authentication(userRepository);
         AuthService authService = new AuthService(userRepository,authentication);
-
+        //String passwordInput = "kox";
+        //System.out.println(DigestUtils.sha256Hex(passwordInput));
         System.out.println("1:Logowanie\n2:Rejestracja");
         Scanner scanner = new Scanner(System.in);
         User user = null;

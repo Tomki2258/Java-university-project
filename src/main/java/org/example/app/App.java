@@ -2,22 +2,27 @@ package org.example.app;
 
 import org.example.*;
 import org.example.models.Vehicle;
+import org.example.repositories.RentalRepository;
 import org.example.repositories.UserRepository;
 import org.example.repositories.VenicleManager;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class App {
     private User user;
     private final UserRepository userRepository;
     private final VenicleManager venicleManager;
-    App(User user, UserRepository userRepository){
+    private final RentalRepository rentalRepository;
+    App(User user, UserRepository userRepository) {
         this.user = user;
         this.userRepository = userRepository;
-        venicleManager = new VenicleManager();
+        rentalRepository = new RentalRepository();
+        venicleManager = new VenicleManager(rentalRepository);
     }
-    void mainProgram(){
+
+    void mainProgram() {
 
         boolean isWorking = true;
         /*
@@ -28,7 +33,7 @@ public class App {
         while (isWorking) {
             System.out.print("1:Wyporzycz\n2:Zwrot\n3:Wypisz pojazdy\n4:Wyjdz");
 
-            if(user.GetUserType().equals(UserType.ADMIN)){
+            if (user.GetUserType().equals(UserType.ADMIN)) {
                 System.out.print("\n5:Dodaj pojazd\n6:Usun pojazd\n7:Sprawdz uzytkowników");
             }
 
@@ -38,38 +43,34 @@ public class App {
 
             switch (operation) {
                 case "1":
-                    int rentIndex = Integer.parseInt(scanner.nextLine());
-                    if (!venicleManager.vehicles.get(rentIndex - 1).getRented()) {
-                        System.out.println("Wyporzyczono pojazd\n" + venicleManager.vehicles.get(rentIndex - 1).toStr());
-                        venicleManager.rentVehicle(rentIndex - 1);
-                        user.RentVehicle(rentIndex - 1);
-                        userRepository.save();
-                    } else {
-                        System.out.println("JUZ WYPORZYCZONE");
+                    if(rentalRepository.checkUserRent(user) != -1){
+                        System.out.println("MASZ JUZ WYPORZYCZONY POJAZD");
+                        return;
                     }
+
+                    int rentIndex = Integer.parseInt(scanner.nextLine());
+                    System.out.println("Wyporzyczono pojazd\n" + venicleManager.vehicles.get(rentIndex - 1).toStr());
+                    venicleManager.rentVehicle(rentIndex - 1, user);
+                    user.RentVehicle(rentIndex - 1);
+                    userRepository.save();
+
                     break;
                 case "2":
-                    if(user.GetRendedVehicle() == -1){
-                        System.out.println("NIE MASZ WYPOZYCZONYCH POJAZDOW");
-                        break;
+                    if(rentalRepository.checkUserRent(user) == -1){
+                        System.out.println("NIE MASZ WYPORZYCZONEGO POJAZDU");
+                        return;
                     }
-                    int choosenIndex = Integer.parseInt(scanner.nextLine());
-                    if(venicleManager.vehicles.get(choosenIndex - 1).getRented()){
-                        System.out.println("Zwrocono pojaz\n" + venicleManager.vehicles.get(choosenIndex - 1).toStr());
-                        venicleManager.returnVehicle(choosenIndex - 1);
+                        System.out.println("Zwrocono pojaz\n");
+                        rentalRepository.returnVehicle(user);
                         user.RemoveVehicle();
                         userRepository.save();
-                    }else{
-                        System.out.println("POJAZD NIE WYPORZYCZONY");
-                    }
                     break;
                 case "3":
-                    if(user.GetUserType() == UserType.ADMIN){
-                        venicleManager.getVehicles(venicleManager.vehicles);
+                    switch (user.GetUserType()){
+                        case USER -> venicleManager.getAvailableVehicles(venicleManager.vehicles);
+                        case ADMIN -> venicleManager.getVehicles(venicleManager.vehicles);
                     }
-                    else{
-                        venicleManager.getAvailableVehicles(venicleManager.vehicles);
-                    }
+
                     //System.out.println("DEEP KOPIA");
                     //venicleManager.getVehicles(venicleManager.deepVehicles);
                     break;
@@ -80,12 +81,13 @@ public class App {
 
                     venicleManager.saveJson();
                     userRepository.saveJson();
+                    rentalRepository.save();
                     break;
                 case "5":
                     addingVehile();
                     break;
                 case "6":
-                    if(user.GetUserType() != UserType.ADMIN) {
+                    if (user.GetUserType() != UserType.ADMIN) {
                         System.out.println("NIE MASZ PRAWA DO WYKONANIA TEJ OPERACJI");
                         break;
                     }
@@ -94,7 +96,7 @@ public class App {
                     System.out.println("Podaj identyfikator pojazdu do usunięcia");
                     int input = scanner.nextInt();
 
-                    if(input > venicleManager.vehicles.stream().count()){
+                    if (input > venicleManager.vehicles.stream().count()) {
                         System.out.println("ZŁY INDEX");
                         break;
                     }
@@ -103,8 +105,8 @@ public class App {
                     System.out.println("POJAZD USUNIETY");
                     break;
                 case "7":
-                    for (User user : userRepository.getUsers()){
-                        if(user.GetUserType() != UserType.ADMIN){
+                    for (User user : userRepository.getUsers()) {
+                        if (user.GetUserType() != UserType.ADMIN) {
                             user.Describeuser();
                         }
                     }
@@ -112,9 +114,10 @@ public class App {
             }
         }
     }
-    private void addingVehile(){
+
+    private void addingVehile() {
         Scanner scanner = new Scanner(System.in);
-        if(user.GetUserType() != UserType.ADMIN) {
+        if (user.GetUserType() != UserType.ADMIN) {
             System.out.println("NIE MASZ PRAWA DO WYKONANIA TEJ OPERACJI");
             return;
         }
@@ -122,14 +125,14 @@ public class App {
         scanner = new Scanner(System.in);
         String line = scanner.nextLine();
         List<String> splitted = List.of(line.split(":"));
-
+        String id = String.valueOf(UUID.randomUUID());
         String brand = splitted.getFirst();
         String model = splitted.get(1);
         int year = Integer.valueOf(splitted.get(2));
         String category = splitted.get(3);
         String plate = splitted.get(4);
         Vehicle vehicle = new Vehicle(
-                venicleManager.getVehicleCount() + 1,
+                id,
                 brand,
                 model,
                 year,
