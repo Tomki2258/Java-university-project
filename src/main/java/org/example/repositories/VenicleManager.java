@@ -1,11 +1,11 @@
 package org.example.repositories;
 
-import org.example.Categories;
-import org.example.Types;
-
 import org.example.User;
-import org.example.UserType;
+import org.example.app.Main;
 import org.example.models.Vehicle;
+import org.example.repositories.Jdbc.VehicleJdbcRepository;
+import org.example.repositories.Json.RentalJsonRepository;
+import org.example.repositories.Json.VehiclesJsonRepository;
 
 import java.io.*;
 import java.util.*;
@@ -14,19 +14,28 @@ public class VenicleManager implements IVehicleRepository {
     public List<Vehicle> vehicles = new ArrayList<>();
     public List<Vehicle> deepVehicles = new ArrayList<>();
 
-    private RentalRepository rentalRepository;
+    private RentalService rentalService;
+    private RentalJsonRepository rentalJsonRepository;
     private VehiclesJsonRepository vehiclesJsonRepository;
+    private final VehicleJdbcRepository vehicleJdbcRepository;
 
-    public VenicleManager(RentalRepository rentalRepository) {
-        this.rentalRepository = rentalRepository;
+    public VenicleManager(RentalService rentalService) {
+        this.rentalService = rentalService;
         vehiclesJsonRepository = new VehiclesJsonRepository();
-        vehicles = vehiclesJsonRepository.getVehicles();
+        //vehicles = vehiclesJsonRepository.getVehicles();
+
+        vehicleJdbcRepository = new VehicleJdbcRepository();
+        if(Main.jsonMode){
+            vehicles = vehiclesJsonRepository.getVehicles();
+        }else{
+            vehicles = vehicleJdbcRepository.findAll();
+        }
         setList();
     }
 
-    private void setList(){
+    private void setList() {
         deepVehicles.clear();
-        for (Vehicle veh : vehicles){
+        for (Vehicle veh : vehicles) {
             deepVehicles.add(veh.clone());
         }
     }
@@ -65,9 +74,9 @@ public class VenicleManager implements IVehicleRepository {
     public void rentVehicle(int index, User user) {
         vehicles.get(index).setRended(true);
 
-        rentalRepository.addRental(user,vehicles.get(index));
+        rentalJsonRepository.addRental(user, vehicles.get(index));
         //save();
-        rentalRepository.printRentals();
+        rentalJsonRepository.printRentals();
     }
 
     @Override
@@ -77,16 +86,16 @@ public class VenicleManager implements IVehicleRepository {
     }
 
     @Override
-    public void getVehicles(List <Vehicle> list) {
+    public void getVehicles(List<Vehicle> list) {
         StringBuilder vehiclesString = new StringBuilder();
         int index = 1;
         for (Vehicle vehicle : vehicles) {
-            String line = String.format("ID:%d Brand:%s Model:%s Year:%d"
-                    ,index,vehicle.getBrand(),vehicle.getModel(),vehicle.getYear());
-            if(rentalRepository.isVehicleRented(vehicle)){
-                vehiclesString.append(" RENDTED\n");
-            }
-            else{
+            String line = String.format("ID:%d Brand:%s Model:%s Year:%"
+                    , index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear());
+            //TODO:SRPAWDZANIE CZY POJAZD JEST WYPORZYCZONY W JDBCs
+            if (rentalService.isVehicleRented(vehicle)) {
+                vehiclesString.append("RENDTED\n");
+            } else {
                 vehiclesString.append("\n");
             }
             vehiclesString.append(line);
@@ -97,26 +106,21 @@ public class VenicleManager implements IVehicleRepository {
 
     @Override
     public void save() {
-        try {
-            FileWriter fileWriter = new FileWriter("cars.csv");
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-
-            printWriter.print(toCSV());
-            printWriter.close();
-
-        } catch (Exception exception) {
-            System.out.println(exception);
+        if(Main.jsonMode){
+            vehiclesJsonRepository.save(vehicles);
         }
     }
+
     public String toCSV() {
         StringBuilder vehiclesString = new StringBuilder();
         for (Vehicle vehicle : vehicles) {
             String vehicleLine = String.format("%d;%s;%s;%d;%d;%b;%s;%s\n",
-                    vehicle.getId(), vehicle.getBrand(), vehicle.getModel(), vehicle.getYear(), vehicle.getPrice(), vehicle.getRented(), vehicle.getCategory(),vehicle.getType());
+                    vehicle.getId(), vehicle.getBrand(), vehicle.getModel(), vehicle.getYear(), vehicle.getPrice(), vehicle.getRented(), vehicle.getCategory(), vehicle.getType());
             vehiclesString.append(vehicleLine);
         }
         return vehiclesString.toString();
     }
+
     @Override
     public void loadCSV() {
 
@@ -124,10 +128,10 @@ public class VenicleManager implements IVehicleRepository {
 
     @Override
     public boolean equals(Vehicle a, Vehicle b) {
-        if(!Objects.equals(a.getType(), b.getType()))
+        if (!Objects.equals(a.getType(), b.getType()))
             return false;
 
-        if(a.getBrand().equals(b.getBrand())
+        if (a.getBrand().equals(b.getBrand())
                 && a.getModel().equals(b.getModel())
                 && a.getPrice() == b.getPrice()
                 && a.getYear() == b.getYear()
@@ -162,11 +166,11 @@ public class VenicleManager implements IVehicleRepository {
         StringBuilder vehiclesString = new StringBuilder();
         int index = 1;
         for (Vehicle vehicle : vehicles) {
-            if(rentalRepository.isVehicleRented(vehicle)){
+            if (rentalService.isVehicleRented(vehicle)) {
                 continue;
             }
             String line = String.format("ID:%d Brand:%s Model:%s Year:%d\n"
-                    ,index,vehicle.getBrand(),vehicle.getModel(),vehicle.getYear());
+                    , index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear());
             vehiclesString.append(line);
             index++;
         }
@@ -182,7 +186,9 @@ public class VenicleManager implements IVehicleRepository {
     public void saveJson() {
         vehiclesJsonRepository.save(vehicles);
     }
-    public int getVehicleCount(){
+
+    public int getVehicleCount() {
         return vehicles.size();
     }
+
 }

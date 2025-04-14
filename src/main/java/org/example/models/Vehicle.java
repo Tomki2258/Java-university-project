@@ -1,5 +1,6 @@
 package org.example.models;
 
+import lombok.*;
 import org.example.Categories;
 import org.example.Types;
 
@@ -8,6 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+
+@Data
+@AllArgsConstructor
+@Builder
 public class Vehicle implements Cloneable {
     private String id;
     private String type;
@@ -20,7 +25,8 @@ public class Vehicle implements Cloneable {
 
     private String plate;
     private int price;
-    private HashMap<String, Object> attributes;
+    @lombok.Builder.Default
+    private Map<String, Object> attributes = Map.of();
 
     public Vehicle(String id,String brand,String model,int year,String type,String plate,HashMap<String,Object> attributes){
         this.id = id;
@@ -93,7 +99,10 @@ public class Vehicle implements Cloneable {
     public String getHashCode(){
         return hashCode;
     }
-    public HashMap<String,Object> getAttributes(){
+    public Map<String,Object> getAttributes(){
         return attributes;
+    }
+    public String getPlate(){
+        return plate;
     }
 }

@@ -1,15 +1,16 @@
 package org.example.models;
+import lombok.*;
 
+
+@AllArgsConstructor
+@Data
+@Builder
 public class Rental {
-    private int id;
+    private String id;
     private String userID;
     private String vehicleID;
-
-    public Rental(int id, String userID, String vehicleID){
-        this.id = id;
-        this.userID = userID;
-        this.vehicleID = vehicleID;
-    }
+    private String rentDate;
+    private String returnDate;
 
     public void setUserID(String userID) {
         this.userID = userID;
@@ -23,13 +24,13 @@ public class Rental {
         return userID;
     }
 
-    public String getVehicleID() {
+    public String getVehicleId() {
         return vehicleID;
     }
-    public int getId(){
+    public String getId(){
         return id;
     }
     public void describe(){
-        System.out.println(userID + "/" + vehicleID);
+        System.out.println(userID + " / " + vehicleID + " / " + rentDate + " / " +returnDate);
     }
 }

@@ -1,4 +1,10 @@
 package org.example;
+
+import lombok.*;
+
+@AllArgsConstructor
+@Data
+@Builder
 public class User {
     private String id;
     private String login;
@@ -46,10 +52,11 @@ public class User {
     public String GetNick(){
         return login;
     }
-    public String GetPassword(){
+    public String getPassword(){
         return password;
     }
     public String getId(){
         return  id;
     }
+
 }

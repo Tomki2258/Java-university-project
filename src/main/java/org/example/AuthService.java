@@ -1,19 +1,18 @@
 package org.example;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.example.repositories.UserRepository;
-import org.mindrot.jbcrypt.BCrypt;
+import org.example.repositories.UserService;
 
 import java.util.Scanner;
 import java.util.UUID;
 
 public class AuthService {
     private Authentication authentication;
-    private UserRepository userRepository;
+    private UserService userService;
 
-    public AuthService(UserRepository userRepository, Authentication authentication) {
+    public AuthService(UserService userService, Authentication authentication) {
         this.authentication = authentication;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public User login() {
@@ -30,17 +29,17 @@ public class AuthService {
 
         boolean passwordResult = false;
 
-        passwordResult = authentication.CheckPassword(DigestUtils.sha256Hex(passwordInput));
+        //passwordResult = authentication.CheckPassword(DigestUtils.sha256Hex(passwordInput));
         //String hashed = BCrypt.hashpw(passwordInput, BCrypt.gensalt());
 
-        //passwordResult = authentication.CheckPassword(passwordInput);
+        passwordResult = authentication.CheckPassword(passwordInput);
 
         if (!passwordResult) {
             System.out.println("BŁĄD LOGOWANIA");
             return null;
         }
 
-        return userRepository.getUser(result);
+        return userService.getUser(result);
     }
 
     public boolean register() {
@@ -49,7 +48,7 @@ public class AuthService {
         System.out.println("Login");
         String loginString = scanner.nextLine();
 
-        if (userRepository.userExist(loginString)) {
+        if (userService.userExist(loginString)) {
             System.out.println("TAKI UZYTKOWNIK ISTNIEJE");
             return false;
         }
@@ -64,8 +63,8 @@ public class AuthService {
         UUID uuid = UUID.randomUUID();
 
         User user = new User(uuid.toString(), loginString, hashed);
-        userRepository.add(user);
-        userRepository.saveJson();
+        userService.add(user);
+        userService.save();
         return true;
     }
 }

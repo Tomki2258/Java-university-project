@@ -1,4 +1,4 @@
-package org.example.repositories;
+package org.example.repositories.Json;
 
 import com.google.gson.reflect.TypeToken;
 import com.umcsuser.carrent.utils.JsonFileStorage;

@@ -1,16 +1,15 @@
-package org.example.repositories;
+package org.example.repositories.Json;
 
 import com.google.gson.reflect.TypeToken;
 import org.example.User;
-import org.example.models.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsersJsonRepository {
-    private final String VEHICLES_PATH = "src/data/users.json";
+    private final String USERS_PATH = "src/data/users.json";
     private final com.umcsuser.carrent.utils.JsonFileStorage storage =
-            new com.umcsuser.carrent.utils.JsonFileStorage<>(VEHICLES_PATH, new TypeToken<List<User>>(){}.getType());
+            new com.umcsuser.carrent.utils.JsonFileStorage<>(USERS_PATH, new TypeToken<List<User>>(){}.getType());
     private final List<User> users;
 
     public UsersJsonRepository(){

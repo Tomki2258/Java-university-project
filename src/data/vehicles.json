@@ -1,1 +1,32 @@
-[{"id":"2d03f343-1ed7-41e9-aa9a-5806706c470a","type":"CAR","brand":"HONDA","model":"CIVIC","year":2008,"rented":true,"plate":"RST50YU","price":0},{"id":"c7a53b2f-1a99-49f4-9253-36286328632e","type":"Car","brand":"HONDA","model":"S2000","year":2004,"rented":true,"plate":"LU1234","price":0},{"id":"9ca6b593-7101-4cd5-b40a-685266c9e2bb","type":"Car","brand":"FIAT","model":"126p RED","year":1980,"rented":true,"plate":"LU12621","price":0}]
+[
+  {
+    "id": "2d03f343-1ed7-41e9-aa9a-5806706c470a",
+    "type": "CAR",
+    "brand": "HONDA",
+    "model": "CIVIC",
+    "year": 2008,
+    "rented": true,
+    "plate": "RST50YU",
+    "price": 0
+  },
+  {
+    "id": "c7a53b2f-1a99-49f4-9253-36286328632e",
+    "type": "Car",
+    "brand": "HONDA",
+    "model": "S2000",
+    "year": 2004,
+    "rented": true,
+    "plate": "LU1234",
+    "price": 0
+  },
+  {
+    "id": "9ca6b593-7101-4cd5-b40a-685266c9e2bb",
+    "type": "Car",
+    "brand": "FIAT",
+    "model": "126p RED",
+    "year": 1980,
+    "rented": true,
+    "plate": "LU12621",
+    "price": 0
+  }
+]

@@ -2,8 +2,9 @@ package org.example.app;
 
 import org.example.*;
 import org.example.models.Vehicle;
-import org.example.repositories.RentalRepository;
-import org.example.repositories.UserRepository;
+import org.example.repositories.Json.RentalJsonRepository;
+import org.example.repositories.RentalService;
+import org.example.repositories.UserService;
 import org.example.repositories.VenicleManager;
 
 import java.util.List;
@@ -12,14 +13,18 @@ import java.util.UUID;
 
 public class App {
     private User user;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final VenicleManager venicleManager;
-    private final RentalRepository rentalRepository;
-    App(User user, UserRepository userRepository) {
+    //private final RentalJsonRepository rentalJsonRepository;
+    private final RentalJsonRepository rentalJsonRepository;
+
+    private final RentalService rentalService = new RentalService();
+    App(User user, UserService userService) {
         this.user = user;
-        this.userRepository = userRepository;
-        rentalRepository = new RentalRepository();
-        venicleManager = new VenicleManager(rentalRepository);
+        this.userService = userService;
+        this.rentalJsonRepository = new RentalJsonRepository();
+        //rentalJsonRepository = new RentalJsonRepository();
+        venicleManager = new VenicleManager(rentalService);
     }
 
     void mainProgram() {
@@ -43,27 +48,28 @@ public class App {
 
             switch (operation) {
                 case "1":
-                    if(rentalRepository.checkUserRent(user) != -1){
-                        System.out.println("MASZ JUZ WYPORZYCZONY POJAZD");
-                        return;
-                    }
+                    //if(rentalJsonRepository.checkUserRent(user) != -1){
+                    //    System.out.println("MASZ JUZ WYPORZYCZONY POJAZD");
+                    //    return;
+                    //}
 
                     int rentIndex = Integer.parseInt(scanner.nextLine());
                     System.out.println("Wyporzyczono pojazd\n" + venicleManager.vehicles.get(rentIndex - 1).toStr());
                     venicleManager.rentVehicle(rentIndex - 1, user);
                     user.RentVehicle(rentIndex - 1);
-                    userRepository.save();
+                    userService.save();
 
                     break;
                 case "2":
-                    if(rentalRepository.checkUserRent(user) == -1){
+                    if(rentalService.checkUserRent(user) == -1){
                         System.out.println("NIE MASZ WYPORZYCZONEGO POJAZDU");
                         return;
                     }
                         System.out.println("Zwrocono pojaz\n");
-                        rentalRepository.returnVehicle(user);
+                        //TODO:returnVehicle do RentalRepository
+                        //rentalJsonRepository.returnVehicle(user);
                         user.RemoveVehicle();
-                        userRepository.save();
+                        userService.save();
                     break;
                 case "3":
                     switch (user.GetUserType()){
@@ -80,8 +86,9 @@ public class App {
                     isWorking = false;
 
                     venicleManager.saveJson();
-                    userRepository.saveJson();
-                    rentalRepository.save();
+                    userService.save();
+                    //TODO:Dodanie zapisywania do bazy danych
+                    //rentalJsonRepository.save();
                     break;
                 case "5":
                     addingVehile();
@@ -105,7 +112,7 @@ public class App {
                     System.out.println("POJAZD USUNIETY");
                     break;
                 case "7":
-                    for (User user : userRepository.getUsers()) {
+                    for (User user : userService.getUsers()) {
                         if (user.GetUserType() != UserType.ADMIN) {
                             user.Describeuser();
                         }
@@ -126,7 +133,7 @@ public class App {
         String line = scanner.nextLine();
         List<String> splitted = List.of(line.split(":"));
         String id = String.valueOf(UUID.randomUUID());
-        String brand = splitted.getFirst();
+        String brand = splitted.get(0);
         String model = splitted.get(1);
         int year = Integer.valueOf(splitted.get(2));
         String category = splitted.get(3);

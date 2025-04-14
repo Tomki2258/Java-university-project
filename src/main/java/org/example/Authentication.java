@@ -1,31 +1,31 @@
 package org.example;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.example.repositories.UserRepository;
+import org.example.repositories.UserService;
 
 public class Authentication {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public Authentication(UserRepository userRepository){
-        this.userRepository = userRepository;
+    public Authentication(UserService userService){
+        this.userService = userService;
     }
     public void DescribeUsers(){
-        for (User user :userRepository.getUsers()){
-            String hashed = DigestUtils.sha256Hex(user.GetPassword());
+        for (User user : userService.getUsers()){
+            String hashed = DigestUtils.sha256Hex(user.getPassword());
             System.out.println(hashed);
         }
     }
     public int CheckForUser(String nick){
-        for (User user : userRepository.getUsers()){
+        for (User user : userService.getUsers()){
             if(user.GetNick().equals(nick)){
-                return userRepository.getUsers().indexOf(user);
+                return userService.getUsers().indexOf(user);
             }
         }
         return -1;
     }
     public boolean CheckPassword(String password){
-        for (User user : userRepository.getUsers()){
-            if(user.GetPassword().equals(password)){
+        for (User user : userService.getUsers()){
+            if(user.getPassword().equals(password)){
                 return true;
             }
         }
