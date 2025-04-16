@@ -7,9 +7,7 @@ import org.example.repositories.RentalService;
 import org.example.repositories.UserService;
 import org.example.repositories.VenicleManager;
 
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class App {
     private User user;
@@ -138,14 +136,28 @@ public class App {
         int year = Integer.valueOf(splitted.get(2));
         String category = splitted.get(3);
         String plate = splitted.get(4);
+        HashMap<String, Object> map = new HashMap<>();
+
         Vehicle vehicle = new Vehicle(
                 id,
                 brand,
                 model,
                 year,
                 category,
-                plate
+                plate,
+                map
         );
+        System.out.println("Dodać atrybut ? (Y|N)");
+        String input = scanner.nextLine();
+        while (input.equals("Y")){
+            System.out.println("Klucz atrybuty");
+            String a = scanner.nextLine();
+            System.out.println("wartosc atrybutu");
+            String b = scanner.nextLine();
+            map.put(a,b);
+            System.out.println("Chcesz dodać więcej atrybutów ?(Y|N)");
+            input = scanner.nextLine();
+        }
 
         venicleManager.addVehicle(vehicle);
     }

@@ -22,10 +22,10 @@ public class Main {
         }
         */
         Scanner scanner = new Scanner(System.in);
-
+        System.out.println("Wybierz system \n1:JSON\n2:JDBC");
         String input = scanner.nextLine();
         jsonMode = switch (input) {
-            case "B" -> false;
+            case "2" -> false;
             default -> jsonMode;
         };
         UserService userService = new UserService();

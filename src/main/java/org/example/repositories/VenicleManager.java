@@ -90,7 +90,7 @@ public class VenicleManager implements IVehicleRepository {
         StringBuilder vehiclesString = new StringBuilder();
         int index = 1;
         for (Vehicle vehicle : vehicles) {
-            String line = String.format("ID:%d Brand:%s Model:%s Year:%"
+            String line = String.format("ID:%d Brand:%s Model:%s Year:%d"
                     , index, vehicle.getBrand(), vehicle.getModel(), vehicle.getYear());
             //TODO:SRPAWDZANIE CZY POJAZD JEST WYPORZYCZONY W JDBCs
             if (rentalService.isVehicleRented(vehicle)) {
@@ -145,7 +145,11 @@ public class VenicleManager implements IVehicleRepository {
     @Override
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
-        saveJson();
+        if(Main.jsonMode){
+            saveJson();
+        }else {
+            vehicleJdbcRepository.add(vehicle);
+        }
         setList();
     }
 

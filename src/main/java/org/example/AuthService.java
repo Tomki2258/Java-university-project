@@ -29,10 +29,10 @@ public class AuthService {
 
         boolean passwordResult = false;
 
-        //passwordResult = authentication.CheckPassword(DigestUtils.sha256Hex(passwordInput));
+        passwordResult = authentication.CheckPassword(DigestUtils.sha256Hex(passwordInput));
         //String hashed = BCrypt.hashpw(passwordInput, BCrypt.gensalt());
 
-        passwordResult = authentication.CheckPassword(passwordInput);
+        //passwordResult = authentication.CheckPassword(passwordInput);
 
         if (!passwordResult) {
             System.out.println("BŁĄD LOGOWANIA");
