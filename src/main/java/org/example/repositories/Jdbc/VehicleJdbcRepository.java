@@ -76,7 +76,7 @@ public class VehicleJdbcRepository implements VehicleRepository {
     }
 
     @Override
-    public Vehicle add(Vehicle vehicle) {
+    public Vehicle addToDatabase(Vehicle vehicle) {
 //        if (vehicle.getId() == null || vehicle.getId().isBlank()) {
 //            vehicle.setId(UUID.randomUUID().toString());
 //        } else {

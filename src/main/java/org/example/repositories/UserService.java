@@ -22,15 +22,13 @@ public class UserService {
     private final UsersJsonRepository usersJsonRepository = new UsersJsonRepository();
     private final UserJdbcRepository userJdbcRepository = new UserJdbcRepository();
     public UserService(){
-        //users = usersJsonRepository.getUsers();
-//        users.add(new User("admin","kox",UserType.ADMIN));
-//        users.add(new User("user","skibidi",UserType.USER));
         if(jsonMode) {
             users = usersJsonRepository.getUsers();
         }
         else{
             users = userJdbcRepository.getUsers();
         }
+
         for(User user:users){
             user.Describeuser();
         }

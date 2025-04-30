@@ -7,26 +7,27 @@ import org.example.models.Vehicle;
 import org.example.repositories.Jdbc.RentalJdbcRepository;
 import org.example.repositories.Json.RentalJsonRepository;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 public class RentalService {
     public List<Rental> rentalList;
-    private final RentalJdbcRepository rentalJdbcRepository;
-    private final RentalJsonRepository rentalJsonRepository;
+    private RentalJdbcRepository rentalJdbcRepository;
+    private RentalJsonRepository rentalJsonRepository;
 
     public RentalService()
     {
-        this.rentalJdbcRepository = new RentalJdbcRepository();
-        this.rentalJsonRepository = new RentalJsonRepository();
-
         if(Main.jsonMode){
+            this.rentalJsonRepository = new RentalJsonRepository();
             rentalList = rentalJsonRepository.getRentals();
         }
         else{
+            this.rentalJdbcRepository = new RentalJdbcRepository();
             rentalList = rentalJdbcRepository.getRentals();
         }
-        printRentals();
+        //printRentals();
     }
     public void printRentals() {
         for (int i = 0; i < rentalList.size(); i++) {
@@ -53,15 +54,29 @@ public class RentalService {
         return false;
     }
     public void returnVehicle(User user) {
-        String id = user.getId();
-        Rental toRemove = null;
-        for (Rental rental : rentalList) {
-            if (rental.getUserID().equals(id)) {
-                toRemove = rental;
-            }
+        if(Main.jsonMode){
+            rentalJsonRepository.returnVehicle(user.getId());
+        }
+        else{
+            rentalJdbcRepository.returnVehicle(user.getId())    ;
         }
 
-        rentalList.remove(toRemove);
+        //rentalList.remove(toRemove);
+    }
+    public void rentVehicle(User user,Vehicle vehicle){
+        String rentalSize = String.valueOf(rentalList.size());
+        String currentDate = LocalDateTime.now().toString();
+        Rental rental = new Rental(rentalSize,
+                user.getId(),
+                vehicle.getId(),
+                currentDate,
+                "");
+        if(Main.jsonMode) {
+            rentalJsonRepository.add(rental);
+        }
+        else{
+            rentalJdbcRepository.add(rental);
+        }
     }
     public Optional<Rental> findByVehicleIdAndReturnDateIsNull(String vehicleId) {
         return rentalList.stream()

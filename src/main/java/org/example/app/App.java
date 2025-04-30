@@ -14,13 +14,11 @@ public class App {
     private final UserService userService;
     private final VenicleManager venicleManager;
     //private final RentalJsonRepository rentalJsonRepository;
-    private final RentalJsonRepository rentalJsonRepository;
 
     private final RentalService rentalService = new RentalService();
     App(User user, UserService userService) {
         this.user = user;
         this.userService = userService;
-        this.rentalJsonRepository = new RentalJsonRepository();
         //rentalJsonRepository = new RentalJsonRepository();
         venicleManager = new VenicleManager(rentalService);
     }
@@ -57,6 +55,8 @@ public class App {
                     user.RentVehicle(rentIndex - 1);
                     userService.save();
 
+
+                    rentalService.rentVehicle(user,venicleManager.vehicles.get(rentIndex - 1));
                     break;
                 case "2":
                     if(rentalService.checkUserRent(user) == -1){
@@ -66,6 +66,7 @@ public class App {
                         System.out.println("Zwrocono pojaz\n");
                         //TODO:returnVehicle do RentalRepository
                         //rentalJsonRepository.returnVehicle(user);
+                        rentalService.returnVehicle(user);
                         user.RemoveVehicle();
                         userService.save();
                     break;
@@ -82,8 +83,9 @@ public class App {
                     System.out.println("narka");
 
                     isWorking = false;
-
-                    venicleManager.saveJson();
+                    if(Main.jsonMode) {
+                        venicleManager.saveJson();
+                    }
                     userService.save();
                     //TODO:Dodanie zapisywania do bazy danych
                     //rentalJsonRepository.save();
@@ -107,6 +109,8 @@ public class App {
                     }
 
                     venicleManager.removeVehicle(input - 1);
+
+
                     System.out.println("POJAZD USUNIETY");
                     break;
                 case "7":

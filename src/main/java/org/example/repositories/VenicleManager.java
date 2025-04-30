@@ -3,31 +3,31 @@ package org.example.repositories;
 import org.example.User;
 import org.example.app.Main;
 import org.example.models.Vehicle;
+import org.example.repositories.Jdbc.RentalJdbcRepository;
 import org.example.repositories.Jdbc.VehicleJdbcRepository;
 import org.example.repositories.Json.RentalJsonRepository;
 import org.example.repositories.Json.VehiclesJsonRepository;
 
-import java.io.*;
 import java.util.*;
 
 public class VenicleManager implements IVehicleRepository {
     public List<Vehicle> vehicles = new ArrayList<>();
     public List<Vehicle> deepVehicles = new ArrayList<>();
 
-    private RentalService rentalService;
-    private RentalJsonRepository rentalJsonRepository;
+    private final RentalService rentalService;
+
     private VehiclesJsonRepository vehiclesJsonRepository;
-    private final VehicleJdbcRepository vehicleJdbcRepository;
+    private VehicleJdbcRepository vehicleJdbcRepository;
 
     public VenicleManager(RentalService rentalService) {
         this.rentalService = rentalService;
-        vehiclesJsonRepository = new VehiclesJsonRepository();
         //vehicles = vehiclesJsonRepository.getVehicles();
 
-        vehicleJdbcRepository = new VehicleJdbcRepository();
         if(Main.jsonMode){
+            vehiclesJsonRepository = new VehiclesJsonRepository();
             vehicles = vehiclesJsonRepository.getVehicles();
         }else{
+            vehicleJdbcRepository = new VehicleJdbcRepository();
             vehicles = vehicleJdbcRepository.findAll();
         }
         setList();
@@ -74,9 +74,6 @@ public class VenicleManager implements IVehicleRepository {
     public void rentVehicle(int index, User user) {
         vehicles.get(index).setRended(true);
 
-        rentalJsonRepository.addRental(user, vehicles.get(index));
-        //save();
-        rentalJsonRepository.printRentals();
     }
 
     @Override
@@ -148,16 +145,23 @@ public class VenicleManager implements IVehicleRepository {
         if(Main.jsonMode){
             saveJson();
         }else {
-            vehicleJdbcRepository.add(vehicle);
+            vehicleJdbcRepository.addToDatabase(vehicle);
         }
-        setList();
+        //setList();
     }
 
     @Override
     public void removeVehicle(int index) {
+        if(Main.jsonMode){
+            saveJson();
+        }
+        else{
+            vehicles.get(index).Describe();
+            vehicleJdbcRepository.deleteById(vehicles.get(index).getId());
+        }
         vehicles.remove(index);
-        saveJson();
-        setList();
+
+        //setList();
     }
 
     @Override
