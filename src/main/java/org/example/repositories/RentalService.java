@@ -8,7 +8,6 @@ import org.example.repositories.Jdbc.RentalJdbcRepository;
 import org.example.repositories.Json.RentalJsonRepository;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,24 +33,16 @@ public class RentalService {
             rentalList.get(i).describe();
         }
     }
-    public int checkUserRent(User user) {
+    public boolean checkUserRent(User user) {
         String id = user.getId();
 
-        for (Rental rental : rentalList) {
-            if (rental.getUserID().equals(id)) {
-                return rentalList.indexOf(rental);
-            }
-        }
-
-        return -1;               // ':)'
+        Optional<Rental> found = rentalList.stream().filter(rental -> rental.getUserID().equals(id) && rental.getReturnDate().isEmpty()).findFirst();
+        return found.isPresent();
     }
     public boolean isVehicleRented(Vehicle vehicle){
-        for (Rental rental : rentalList) {
-            if (rental.getVehicleId().equals(vehicle.getId())) {
-                return true;
-            }
-        }
-        return false;
+        Optional<Rental> found = rentalList.stream().filter(rental -> rental.getVehicleId().equals(vehicle.getId()) && !rental.getReturnDate().isEmpty()).findFirst();
+
+        return found.isPresent();
     }
     public void returnVehicle(User user) {
         if(Main.jsonMode){

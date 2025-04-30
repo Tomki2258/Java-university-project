@@ -1,9 +1,1 @@
-[
-  {
-    "id": "0",
-    "userID": "dc940b48-4aee-4d51-9dbe-cf59a8c486a1",
-    "vehicleID": "c6cd6146-d9cd-41aa-9acb-17ad161e7632",
-    "rentDate": "2025-04-30T13:10:16.803956861",
-    "returnDate": "2025-04-30T13:10:23.488009540"
-  }
-]
+[{"id":"0","userID":"dc940b48-4aee-4d51-9dbe-cf59a8c486a1","vehicleID":"c6cd6146-d9cd-41aa-9acb-17ad161e7632","rentDate":"2025-04-30T13:10:16.803956861","returnDate":"2025-04-30T13:10:23.488009540"},{"id":"1","userID":"dc940b48-4aee-4d51-9dbe-cf59a8c486a1","vehicleID":"c6cd6146-d9cd-41aa-9acb-17ad161e7632","rentDate":"2025-04-30T13:21:50.531284024","returnDate":"2025-04-30T13:21:52.188653320"}]

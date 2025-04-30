@@ -59,7 +59,7 @@ public class App {
                     rentalService.rentVehicle(user,venicleManager.vehicles.get(rentIndex - 1));
                     break;
                 case "2":
-                    if(rentalService.checkUserRent(user) == -1){
+                    if(!rentalService.checkUserRent(user)){
                         System.out.println("NIE MASZ WYPORZYCZONEGO POJAZDU");
                         return;
                     }
